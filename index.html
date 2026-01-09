@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Birthday BULBUL</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* === Typewriter TANPA KURSOR === */
+    #main-title {
+      font-size: 3rem;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-bottom: 2.5rem; /* diperbesar agar ada ruang untuk kue */
+    }
+
+    /* === KUE CANTIK DENGAN CSS === */
+    .beautiful-cake {
+      position: relative;
+      margin: 1.2rem 0 2rem 0; /* lebih banyak ruang di bawah */
+      animation: floatCake 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 12px #4cc9f0);
+    }
+
+    .cake-layer-1 {
+      width: 180px;
+      height: 30px;
+      background: linear-gradient(to bottom, #fffaf0, #f8f8f8);
+      border-radius: 10px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .cake-layer-2 {
+      width: 150px;
+      height: 30px;
+      background: linear-gradient(to bottom, #fdf2f8, #fce7f3);
+      border-radius: 10px;
+      position: relative;
+      z-index: 2;
+      margin-top: -10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .cake-layer-3 {
+      width: 120px;
+      height: 30px;
+      background: linear-gradient(to bottom, #f0f9ff, #e0f2fe);
+      border-radius: 10px;
+      position: relative;
+      z-index: 3;
+      margin-top: -10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .candle {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 40px;
+      background: linear-gradient(to right, #ff6ec7, #ff8ecc);
+      border-radius: 4px 4px 0 0;
+      z-index: 4;
+    }
+
+    .flame {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 22px;
+      background: #ffff66;
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 
+        0 0 10px #ffff66,
+        0 0 20px #ffcc00,
+        0 0 30px #ff6ec7;
+      opacity: 0;
+      animation: flickerFlame 1.5s infinite alternate;
+    }
+
+    /* === Animasi mengambang lebih halus & terbatas === */
+    @keyframes floatCake {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); } /* dikurangi dari -15px → -8px */
+    }
+
+    @keyframes flickerFlame {
+      0%, 100% {
+        opacity: 0.9;
+        transform: translateX(-50%) translateY(0);
+        height: 22px;
+      }
+      50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-3px);
+        height: 26px;
+      }
+    }
+
+    #personal-message {
+      max-width: 80%;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-top: 1rem;
+      color: #cceeff;
+      visibility: hidden;
+      transition: opacity 1s ease-in;
+    }
+
+    .party-balloon {
+      position: absolute;
+      bottom: -60px;
+      width: 30px;
+      height: 42px;
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatBalloon 12s infinite ease-in;
+    }
+
+    .party-balloon::before {
+      content: "";
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1.5px;
+      height: 60px;
+      background: rgba(179, 224, 255, 0.5);
+    }
+
+    @keyframes floatBalloon {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(var(--rotate, 0deg));
+        opacity: 0;
+      }
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <div id="main-title"></div>
+
+  <!-- Kue Cantik -->
+  <div class="beautiful-cake">
+    <div class="cake-layer-1"></div>
+    <div class="cake-layer-2"></div>
+    <div class="cake-layer-3"></div>
+    <div class="candle">
+      <div class="flame"></div>
+    </div>
+  </div>
+
+  <div id="personal-message">
+    I'M SO HAPPY
+  </div>
+
+  <script>
+    // === Typewriter ===
+    const titleText = "HAPPY BIRTHDAY TO ME";
+    const titleElement = document.getElementById("main-title");
+    let i = 0;
+
+    function typeTitle() {
+      if (i < titleText.length) {
+        titleElement.textContent += titleText.charAt(i);
+        i++;
+        setTimeout(typeTitle, 100);
+      } else {
+        setTimeout(() => {
+          document.getElementById("personal-message").style.visibility = "visible";
+        }, 800);
+      }
+    }
+    typeTitle();
+
+    // === Canvas & Partikel ===
+    const canvas = document.createElement("canvas");
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const colors = ["#4cc9f0", "#00f3ff", "#ffffff", "#7abaff", "#cceeff"];
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 4 + 1;
+        this.speedX = Math.random() * 6 - 3;
+        this.speedY = Math.random() * 6 - 3;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.life = 100;
+      }
+      update() {
+        this.speedY += 0.05;
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.life--;
+        if (this.size > 0.2) this.size -= 0.02;
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function animate() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        if (particles[i].life <= 0 || particles[i].size <= 0.2) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    function explodeCenter() {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      for (let i = 0; i < 200; i++) {
+        particles.push(new Particle(centerX, centerY));
+      }
+    }
+    setTimeout(explodeCenter, 300);
+
+    setInterval(() => {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height / 2;
+      for (let i = 0; i < 80; i++) {
+        particles.push(new Particle(x, y));
+      }
+    }, 1800);
+
+    // === Balon Biru Muda ===
+    const lightBlueColors = ["#cceeff", "#b3e0ff", "#99d6ff", "#80ccff", "#66c2ff", "#4db8ff"];
+
+    function createBalloon() {
+      const balloon = document.createElement("div");
+      balloon.className = "party-balloon";
+      const color = lightBlueColors[Math.floor(Math.random() * lightBlueColors.length)];
+      balloon.style.backgroundColor = color;
+      const size = 20 + Math.random() * 25;
+      balloon.style.width = size + "px";
+      balloon.style.height = (size * 1.4) + "px";
+      balloon.style.left = Math.random() * 100 + "vw";
+      balloon.style.setProperty('--rotate', (Math.random() * 20 - 10) + 'deg');
+      const duration = 10 + Math.random() * 10;
+      balloon.style.animationDuration = duration + "s";
+      document.body.appendChild(balloon);
+      setTimeout(() => {
+        if (balloon.parentNode) balloon.parentNode.removeChild(balloon);
+      }, (duration + 1) * 1000);
+    }
+
+    for (let i = 0; i < 15; i++) {
+      setTimeout(() => createBalloon(), i * 200);
+    }
+    setInterval(createBalloon, 600);
+  </script>
+</body>
+</html>
